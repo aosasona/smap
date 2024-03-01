@@ -1,4 +1,4 @@
-#include "../include/lexer.hpp"
+#include "include/lexer.hh"
 
 namespace lexer {
 Lexer new_lexer(std::string input) {

@@ -3,7 +3,7 @@ const std = @import("std");
 // Although this function looks imperative, note that its job is to
 // declaratively construct a build graph that will be executed by an external
 // runner.
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
@@ -15,20 +15,41 @@ pub fn build(b: *std.Build) void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
+    // walk the src directory for all cc and cpp files
+    var sources = std.ArrayList([]const u8).init(b.allocator);
+    {
+        var dir = try std.fs.cwd().openIterableDir("src", .{});
+        var walker = try dir.walk(b.allocator);
+        defer walker.deinit();
+
+        const allowedExtensions = [_][]const u8{ ".cc", ".c", ".cpp" };
+        while (try walker.next()) |entry| {
+            const ext = std.fs.path.extension(entry.basename);
+            const includeFile = for (allowedExtensions) |allowedExt| {
+                if (std.mem.eql(u8, ext, allowedExt)) {
+                    break true;
+                }
+            } else false;
+
+            if (includeFile) {
+                var path = [_][]const u8{ "src", entry.path };
+                const fullPath = try std.fs.path.join(b.allocator, &path);
+                std.debug.print("Adding source file: {s}\n", .{fullPath});
+                try sources.append(fullPath);
+            }
+        }
+    }
+
     const exe = b.addExecutable(.{
-        .name = "smap",
+        .name = "ssa",
         .target = target,
         .optimize = optimize,
     });
 
+    exe.addIncludePath(.{ .path = "src/include" });
     exe.linkLibCpp();
 
-    exe.addIncludePath(.{ .path = "include" });
-
-    exe.addCSourceFiles(&.{
-        "src/main.cpp",
-        "src/token.cpp",
-    }, &.{
+    exe.addCSourceFiles(sources.items, &.{
         "-pedantic",
         "-Wall",
         "-W",
@@ -37,7 +58,7 @@ pub fn build(b: *std.Build) void {
         "-Wno-unused-function",
         "-Wno-unused-but-set-variable",
         "-Wno-missing-field-initializers",
-        "--std=c++17",
+        "-std=c++17",
     });
 
     b.installArtifact(exe);

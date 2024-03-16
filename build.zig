@@ -41,7 +41,7 @@ pub fn build(b: *std.Build) !void {
     }
 
     const exe = b.addExecutable(.{
-        .name = "ssa",
+        .name = "smap",
         .target = target,
         .optimize = optimize,
     });

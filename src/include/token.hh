@@ -6,6 +6,7 @@
 
 namespace token {
 enum TokenType {
+  PRINT,
   EXPR,
 
   NUMBER,
@@ -15,6 +16,8 @@ enum TokenType {
   MINUS,
   MULTIPLY,
   DIVIDE,
+  EXPONENT,
+  MODULUS,
 
   END_OF_FILE,
   ILLEGAL
@@ -30,14 +33,6 @@ struct Line {
   std::vector<Token> tokens;
   uint line_start;
   uint line_end;
-};
-
-Token NewToken(TokenType type, char ch) {
-  Token token;
-  token.type = type;
-  token.literal = ch;
-
-  return token;
 };
 
 }  // namespace token

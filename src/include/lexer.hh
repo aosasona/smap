@@ -1,5 +1,8 @@
 #include <cassert>
 #include <string>
+#include <vector>
+
+#include "token.hh"
 
 namespace lexer {
 struct Lexer {
@@ -8,33 +11,20 @@ struct Lexer {
   int read_pos;
   char current_char;
 
-  Lexer(std::string input, int current_pos, int read_pos, char current_char)
-      : input(input),
-        current_pos(current_pos),
-        read_pos(read_pos),
-        current_char(current_char) {}
+  Lexer(std::string input)
+      : input(input), current_pos(0), read_pos(0), current_char(0) {}
 
-  char read_char() {
-    if (read_pos >= input.length()) {
-      current_char = 0;
-    } else {
-      assert(read_pos < input.length() && read_pos >= 0);
+  token::Token next();
 
-      current_char = input[read_pos];
-    }
+  char peek();
 
-    current_pos = read_pos;
-    read_pos += 1;
+  void read_char();
 
-    return current_char;
-  }
+  void eat_whitespace();
 
-  void skip_whitespace() {
-    while (current_char == ' ' || current_char == '\t' ||
-           current_char == '\n' || current_char == '\r') {
-      read_char();
-    }
-  }
+  std::string read_identifier();
+
+  std::string read_number();
 };
 
 Lexer new_lexer(std::string input);

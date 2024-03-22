@@ -7,9 +7,9 @@
 namespace token {
 enum TokenType {
   PRINT,
-  EXPR,
+  LET,
 
-  NUMBER,
+  NUMBER,  // floats, negative numbers, etc
   SEMICOLON,
 
   PLUS,
@@ -18,6 +18,7 @@ enum TokenType {
   DIVIDE,
   EXPONENT,
   MODULUS,
+  EQUALS,
 
   END_OF_FILE,
   ILLEGAL
@@ -34,5 +35,7 @@ struct Line {
   uint line_start;
   uint line_end;
 };
+
+Token NewToken(TokenType type, std::string literal);
 
 }  // namespace token

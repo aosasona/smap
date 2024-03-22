@@ -20,6 +20,13 @@
 \n  -v, --version\t\t\tPrint the version of smap \
 "
 
+void print_help() { std::cout << HELP_MESSAGE << std::endl; }
+
+void print_version() {
+  std::printf("SMaP version: %s (%s)\n", VERSION, COMMIT_HASH);
+  std::printf("Built on: %s\n", COMPILE_DATE);
+}
+
 int main(int argc, char** argv) {
   std::string arg;
   if (argc > 1) {
@@ -27,16 +34,17 @@ int main(int argc, char** argv) {
   }
 
   if (arg == "-h" || arg == "--help" || argc == 1) {
-    std::cout << HELP_MESSAGE << std::endl;
+    print_help();
     return 0;
+  } else if (arg == "-v" || arg == "--version") {
+    print_version();
+    return 0;
+  } else {
+    std::cout << "Unknown command: " << arg << std::endl;
+    print_help();
+    return 1;
   }
 
-  if (arg == "-v" || arg == "--version") {
-    std::printf("SMaP version: %s (%s)\n", VERSION, COMMIT_HASH);
-    std::printf("Built on: %s\n", COMPILE_DATE);
-    return 0;
-  }
-
-  std::cout << "Hello, world!" << std::endl;
+  std::cout << "Welcome to SMaP!" << std::endl;
   return 0;
 }

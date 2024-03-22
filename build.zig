@@ -49,6 +49,17 @@ pub fn build(b: *std.Build) !void {
     exe.addIncludePath(.{ .path = "src/include" });
     exe.linkLibCpp();
 
+    const argv = [_][]const u8{ "git", "rev-parse", "HEAD" };
+    var commitHashProcess = try std.ChildProcess.exec(.{
+        .allocator = b.allocator,
+        .argv = &argv,
+    });
+
+    var commitHash = commitHashProcess.stdout;
+    commitHash = commitHash[0..7];
+
+    const commitHashFlag = try std.fmt.allocPrint(b.allocator, "-DCOMMIT_HASH=\"{s}\"", .{commitHash});
+
     exe.addCSourceFiles(sources.items, &.{
         "-pedantic",
         "-Wall",
@@ -59,6 +70,7 @@ pub fn build(b: *std.Build) !void {
         "-Wno-unused-but-set-variable",
         "-Wno-missing-field-initializers",
         "-std=c++17",
+        commitHashFlag,
     });
 
     b.installArtifact(exe);

@@ -29,8 +29,6 @@ Token Lexer::next() {
       break;
 
     case '-':
-      // If the next character is a number, then it is a number, a negative
-      // number
       if (is_number(this->peek())) {
         std::string num = "-";
         num += this->read_number();

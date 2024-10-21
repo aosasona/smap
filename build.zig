@@ -34,7 +34,7 @@ pub fn build(b: *std.Build) !void {
             if (includeFile) {
                 var path = [_][]const u8{ "src", entry.path };
                 const fullPath = try std.fs.path.join(b.allocator, &path);
-                std.debug.print("Adding source file: {s}\n", .{fullPath});
+                // std.debug.print("Adding source file: {s}\n", .{fullPath});
                 try sources.append(fullPath);
             }
         }
@@ -69,6 +69,8 @@ pub fn build(b: *std.Build) !void {
         "-Wno-unused-function",
         "-Wno-unused-but-set-variable",
         "-Wno-missing-field-initializers",
+        "-Wno-missing-braces",
+        "-Werror=switch",
         "-std=c++17",
         commitHashFlag,
     });

@@ -10,7 +10,7 @@
 #define COMPILE_DATE __DATE__ " " __TIME__
 #endif
 
-#define HELP_MESSAGE \
+#define HELP_MESSAGE                                                           \
   "Usage: smap [options] \
 \n\nOptions: \
 \n  repl \t\t\t\tStart the smap REPL \
@@ -27,7 +27,7 @@ void print_version() {
   std::printf("Built on: %s\n", COMPILE_DATE);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   std::string arg;
   if (argc > 1) {
     arg = argv[1];
